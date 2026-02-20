@@ -1,24 +1,547 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Containerization & DevOps Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --surface2: #1a2236;
+      --border: #1e2d45;
+      --accent: #00d4ff;
+      --accent2: #7c3aed;
+      --accent3: #10b981;
+      --text: #e2e8f0;
+      --muted: #64748b;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    header { margin-bottom: 56px; animation: fadeDown 0.5s ease both; }
+
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 4px 12px;
+      border-radius: 2px;
+      margin-bottom: 18px;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .section:nth-child(2) { animation-delay: 0.15s; }
+    .section:nth-child(3) { animation-delay: 0.25s; }
+
+    /* Root folder */
+    .folder-root {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.2s, box-shadow 0.2s, border-radius 0.2s;
+    }
+
+    .folder-root:hover { border-color: rgba(0,212,255,0.5); }
+    .folder-root.open {
+      border-color: var(--accent);
+      box-shadow: 0 0 24px rgba(0,212,255,0.08);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom-color: var(--border);
+    }
+
+    .folder-root-icon { font-size: 1.4rem; }
+    .folder-root-name { font-size: 1.1rem; font-weight: 700; flex: 1; }
+    .folder-root-meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
+
+    .chevron {
+      font-size: 0.7rem;
+      color: var(--accent);
+      transition: transform 0.25s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .open > .chevron { transform: rotate(90deg); }
+
+    /* Root children panel */
+    .root-children {
+      display: none;
+      background: #0d1321;
+      border: 1px solid var(--accent);
+      border-top: none;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      padding: 12px;
+      gap: 6px;
+      flex-direction: column;
+    }
+    .root-children.visible { display: flex; }
+
+    /* Inner folder row */
+    .folder-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.2s, border-radius 0.2s;
+    }
+
+    .folder-row:hover { border-color: rgba(0,212,255,0.35); }
+    .folder-row.open {
+      border-color: rgba(0,212,255,0.5);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom-color: var(--border);
+    }
+
+    .folder-row-icon { font-size: 1.1rem; }
+    .folder-row-name { font-size: 0.92rem; font-weight: 600; flex: 1; }
+    .folder-row-path { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
+
+    /* Leaf grid */
+    .leaf-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 8px;
+      padding: 10px;
+      background: #08101f;
+      border: 1px solid rgba(0,212,255,0.3);
+      border-top: none;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      margin-bottom: 2px;
+    }
+    .leaf-grid.visible { display: grid; }
+
+    .leaf-card {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .leaf-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .leaf-card-icon { font-size: 1.1rem; }
+    .leaf-card-name { font-size: 0.85rem; font-weight: 600; }
+    .leaf-card-path { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); }
+
+    .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      width: fit-content;
+    }
+    .tag-blue   { background: rgba(0,212,255,0.1);  color: var(--accent);  border: 1px solid rgba(0,212,255,0.2); }
+    .tag-purple { background: rgba(124,58,237,0.1); color: #a78bfa;        border: 1px solid rgba(124,58,237,0.2); }
+    .tag-green  { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <h1>Containerization & DevOps Lab</h1>
-  <p>This repository contains lab experiments and documentation.</p>
+<div class="container">
 
-  <h2>Class Labs</h2>
-  <ul>
-    <li><a href="ClassLab/Class4/">Class 4</a></li>
-    <li><a href="ClassLab/Class6/">Class 6</a></li>
-    <li><a href="https://github.com/rajrishu1401/ContainerizationAndDevOpsLab/tree/main/ClassLab/Class7">Class 7</a></li>
-    <li><a href="https://github.com/rajrishu1401/ContainerizationAndDevOpsLab/tree/main/ClassLab/Class8">Class 8</a></li>
-  </ul>
+  <header>
+    <div class="badge">⬡ DevOps Repository</div>
+    <h1>Containerization<br>&amp; DevOps Lab</h1>
+    <p class="subtitle">// click folders to explore contents</p>
+  </header>
 
-  <h2>Lab Experiments</h2>
-  <ul>
-    <li><a href="https://github.com/rajrishu1401/ContainerizationAndDevOpsLab/tree/main/Lab/Exp1">Experiment 1</a></li>
-    <li><a href="https://github.com/rajrishu1401/ContainerizationAndDevOpsLab/tree/main/Lab/Exp2">Experiment 2</a></li>
-  </ul>
+  <!-- ══ CLASS LAB ══ -->
+  <section class="section">
+    <div class="folder-root" onclick="toggleRoot(this)">
+      <span class="folder-root-icon">📁</span>
+      <span class="folder-root-name">ClassLab</span>
+      <span class="folder-root-meta">10 classes · 4 work folders</span>
+      <span class="chevron">▶</span>
+    </div>
+
+    <div class="root-children">
+
+      <!-- Class 4 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 4</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class4/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class4/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 4</span>
+          <span class="leaf-card-path">ClassLab/Class4/</span>
+        </a>
+      </div>
+
+      <!-- Class 6 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 6</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class6/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class6/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 6</span>
+          <span class="leaf-card-path">ClassLab/Class6/</span>
+        </a>
+      </div>
+
+      <!-- Class 7 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 7</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class7/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class7/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 7</span>
+          <span class="leaf-card-path">ClassLab/Class7/</span>
+        </a>
+      </div>
+
+      <!-- Class 8 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 8</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class8/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class8/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 8</span>
+          <span class="leaf-card-path">ClassLab/Class8/</span>
+        </a>
+      </div>
+
+      <!-- Class 10 + Work -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 10</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class10/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class10/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 10</span>
+          <span class="leaf-card-path">ClassLab/Class10/</span>
+        </a>
+        <a class="leaf-card" href="ClassLab/Class10Work/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Class 10 Work</span>
+          <span class="tag tag-purple">WORK</span>
+          <span class="leaf-card-path">ClassLab/Class10Work/</span>
+        </a>
+      </div>
+
+      <!-- Class 11 + Work -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 11</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class11/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class11/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 11</span>
+          <span class="leaf-card-path">ClassLab/Class11/</span>
+        </a>
+        <a class="leaf-card" href="ClassLab/Class11Work/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Class 11 Work</span>
+          <span class="tag tag-purple">WORK</span>
+          <span class="leaf-card-path">ClassLab/Class11Work/</span>
+        </a>
+      </div>
+
+      <!-- Class 12 + Work -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 12</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class12/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class12/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 12</span>
+          <span class="leaf-card-path">ClassLab/Class12/</span>
+        </a>
+        <a class="leaf-card" href="ClassLab/Class12Work/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Class 12 Work</span>
+          <span class="tag tag-purple">WORK</span>
+          <span class="leaf-card-path">ClassLab/Class12Work/</span>
+        </a>
+      </div>
+
+      <!-- Class 13 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 13</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class13/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class13/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 13</span>
+          <span class="leaf-card-path">ClassLab/Class13/</span>
+        </a>
+      </div>
+
+      <!-- Class 15 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 15</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class15/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class15/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 15</span>
+          <span class="leaf-card-path">ClassLab/Class15/</span>
+        </a>
+      </div>
+
+      <!-- Class 16 + Work -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 16</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class16/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class16/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 16</span>
+          <span class="leaf-card-path">ClassLab/Class16/</span>
+        </a>
+        <a class="leaf-card" href="ClassLab/Class16Work/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Class 16 Work</span>
+          <span class="tag tag-purple">WORK</span>
+          <span class="leaf-card-path">ClassLab/Class16Work/</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ LAB EXPERIMENTS ══ -->
+  <section class="section">
+    <div class="folder-root" onclick="toggleRoot(this)">
+      <span class="folder-root-icon">🔬</span>
+      <span class="folder-root-name">Lab</span>
+      <span class="folder-root-meta">3 experiments</span>
+      <span class="chevron">▶</span>
+    </div>
+
+    <div class="root-children">
+
+      <!-- Exp1 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Experiment 1</span>
+        <span class="tag tag-green">EXP</span>
+        <span class="folder-row-path">Lab/Exp1/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="Lab/Exp1/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Exp 1</span>
+          <span class="leaf-card-path">Lab/Exp1/</span>
+        </a>
+      </div>
+
+      <!-- Exp2 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Experiment 2</span>
+        <span class="tag tag-green">EXP</span>
+        <span class="folder-row-path">Lab/Exp2/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="Lab/Exp2/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Exp 2</span>
+          <span class="leaf-card-path">Lab/Exp2/</span>
+        </a>
+      </div>
+
+      <!-- Exp3 + part1 + part2 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Experiment 3</span>
+        <span class="tag tag-green">EXP</span>
+        <span class="folder-row-path">Lab/Exp3/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="Lab/Exp3/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Exp 3</span>
+          <span class="leaf-card-path">Lab/Exp3/</span>
+        </a>
+        <a class="leaf-card" href="Lab/Exp3/part1/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Part 1</span>
+          <span class="leaf-card-path">Lab/Exp3/part1/</span>
+        </a>
+        <a class="leaf-card" href="Lab/Exp3/part2/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Part 2</span>
+          <span class="leaf-card-path">Lab/Exp3/part2/</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <span>Containerization &amp; DevOps Lab</span>
+    <span>index.html · root</span>
+  </footer>
+
+</div>
+
+<script>
+  function toggleRoot(el) {
+    el.classList.toggle('open');
+    el.nextElementSibling.classList.toggle('visible');
+  }
+
+  function toggleRow(el) {
+    // close other open rows inside same parent
+    const siblings = el.parentElement.querySelectorAll('.folder-row.open');
+    siblings.forEach(s => {
+      if (s !== el) {
+        s.classList.remove('open');
+        const next = s.nextElementSibling;
+        if (next && next.classList.contains('leaf-grid')) next.classList.remove('visible');
+      }
+    });
+
+    el.classList.toggle('open');
+    const grid = el.nextElementSibling;
+    if (grid && grid.classList.contains('leaf-grid')) {
+      grid.classList.toggle('visible');
+    }
+  }
+</script>
 </body>
 </html>
