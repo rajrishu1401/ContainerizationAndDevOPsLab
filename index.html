@@ -157,7 +157,6 @@
     .section:nth-child(2) { animation-delay: 0.15s; }
     .section:nth-child(3) { animation-delay: 0.25s; }
 
-    /* Root folder */
     .folder-root {
       display: flex;
       align-items: center;
@@ -192,7 +191,6 @@
     }
     .open > .chevron { transform: rotate(90deg); }
 
-    /* Root children panel */
     .root-children {
       display: none;
       background: #0d1321;
@@ -206,7 +204,6 @@
     }
     .root-children.visible { display: flex; }
 
-    /* Inner folder row */
     .folder-row {
       display: flex;
       align-items: center;
@@ -232,7 +229,6 @@
     .folder-row-name { font-size: 0.92rem; font-weight: 600; flex: 1; }
     .folder-row-path { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
 
-    /* Leaf grid */
     .leaf-grid {
       display: none;
       grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
@@ -346,7 +342,7 @@
     <div class="folder-root" onclick="toggleRoot(this)">
       <span class="folder-root-icon">📁</span>
       <span class="folder-root-name">ClassLab</span>
-      <span class="folder-root-meta">10 classes · 4 work folders</span>
+      <span class="folder-root-meta">12 classes · 5 work folders</span>
       <span class="chevron">▶</span>
     </div>
 
@@ -438,7 +434,7 @@
         </a>
       </div>
 
-      <!-- Class 11 + Work -->
+      <!-- Class 11 + Work (JavaProgram, JavaProgramMulti) -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Class 11</span>
@@ -452,15 +448,21 @@
           <span class="leaf-card-name">Class 11</span>
           <span class="leaf-card-path">ClassLab/Class11/</span>
         </a>
-        <a class="leaf-card" href="ClassLab/Class11Work/">
+        <a class="leaf-card" href="ClassLab/Class11Work/JavaProgram/">
           <span class="leaf-card-icon">📂</span>
-          <span class="leaf-card-name">Class 11 Work</span>
+          <span class="leaf-card-name">JavaProgram</span>
           <span class="tag tag-purple">WORK</span>
-          <span class="leaf-card-path">ClassLab/Class11Work/</span>
+          <span class="leaf-card-path">ClassLab/Class11Work/JavaProgram/</span>
+        </a>
+        <a class="leaf-card" href="ClassLab/Class11Work/JavaProgramMulti/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">JavaProgramMulti</span>
+          <span class="tag tag-purple">WORK</span>
+          <span class="leaf-card-path">ClassLab/Class11Work/JavaProgramMulti/</span>
         </a>
       </div>
 
-      <!-- Class 12 + Work -->
+      <!-- Class 12 + Work (Part1, Part2) -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Class 12</span>
@@ -474,11 +476,17 @@
           <span class="leaf-card-name">Class 12</span>
           <span class="leaf-card-path">ClassLab/Class12/</span>
         </a>
-        <a class="leaf-card" href="ClassLab/Class12Work/">
+        <a class="leaf-card" href="ClassLab/Class12Work/Part1/">
           <span class="leaf-card-icon">📂</span>
-          <span class="leaf-card-name">Class 12 Work</span>
+          <span class="leaf-card-name">Part 1</span>
           <span class="tag tag-purple">WORK</span>
-          <span class="leaf-card-path">ClassLab/Class12Work/</span>
+          <span class="leaf-card-path">ClassLab/Class12Work/Part1/</span>
+        </a>
+        <a class="leaf-card" href="ClassLab/Class12Work/Part2/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Part 2</span>
+          <span class="tag tag-purple">WORK</span>
+          <span class="leaf-card-path">ClassLab/Class12Work/Part2/</span>
         </a>
       </div>
 
@@ -536,6 +544,43 @@
         </a>
       </div>
 
+      <!-- Class 18 (Part1, Part2) -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 18</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class18/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class18/Part1/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Part 1</span>
+          <span class="leaf-card-path">ClassLab/Class18/Part1/</span>
+        </a>
+        <a class="leaf-card" href="ClassLab/Class18/Part2/">
+          <span class="leaf-card-icon">📂</span>
+          <span class="leaf-card-name">Part 2</span>
+          <span class="leaf-card-path">ClassLab/Class18/Part2/</span>
+        </a>
+      </div>
+
+      <!-- Class 19 -->
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Class 19</span>
+        <span class="tag tag-blue">LAB</span>
+        <span class="folder-row-path">ClassLab/Class19/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="ClassLab/Class19/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Class 19</span>
+          <span class="leaf-card-path">ClassLab/Class19/</span>
+        </a>
+      </div>
+
     </div>
   </section>
 
@@ -544,7 +589,7 @@
     <div class="folder-root" onclick="toggleRoot(this)">
       <span class="folder-root-icon">🔬</span>
       <span class="folder-root-name">Lab</span>
-      <span class="folder-root-meta">3 experiments</span>
+      <span class="folder-root-meta">4 experiments</span>
       <span class="chevron">▶</span>
     </div>
 
@@ -582,7 +627,7 @@
         </a>
       </div>
 
-      <!-- Exp3 + part1 + part2 -->
+      <!-- Exp3 -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Experiment 3</span>
@@ -602,6 +647,8 @@
           <span class="leaf-card-path">Lab/Exp3/part2/</span>
         </a>
       </div>
+
+      <!-- Exp4 -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Experiment 4</span>
@@ -613,12 +660,40 @@
         <a class="leaf-card" href="Lab/Exp4/Part1/">
           <span class="leaf-card-icon">📂</span>
           <span class="leaf-card-name">Part 1</span>
-          <span class="leaf-card-path">Lab/Exp4/part1/</span>
+          <span class="leaf-card-path">Lab/Exp4/Part1/</span>
         </a>
         <a class="leaf-card" href="Lab/Exp4/Part2/">
           <span class="leaf-card-icon">📂</span>
           <span class="leaf-card-name">Part 2</span>
-          <span class="leaf-card-path">Lab/Exp4/part2/</span>
+          <span class="leaf-card-path">Lab/Exp4/Part2/</span>
+        </a>
+      </div>
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Experiment 5</span>
+        <span class="tag tag-green">EXP</span>
+        <span class="folder-row-path">Lab/Exp5/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="Lab/Exp5/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Exp 5</span>
+          <span class="leaf-card-path">Lab/Exp5/</span>
+        </a>
+      </div>
+      <div class="folder-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Experiment 6</span>
+        <span class="tag tag-green">EXP</span>
+        <span class="folder-row-path">Lab/Exp6/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid">
+        <a class="leaf-card" href="Lab/Exp6/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Exp 6</span>
+          <span class="leaf-card-path">Lab/Exp6/</span>
         </a>
       </div>
 
@@ -639,7 +714,6 @@
   }
 
   function toggleRow(el) {
-    // close other open rows inside same parent
     const siblings = el.parentElement.querySelectorAll('.folder-row.open');
     siblings.forEach(s => {
       if (s !== el) {
