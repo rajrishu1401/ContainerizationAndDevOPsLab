@@ -80,6 +80,9 @@ echo "From Host" > ~/myapp-data/host-file.txt
 docker exec web3 cat /app/data/host-file.txt
 # Shows: From Host
 ```
+![6](img/6.png)
+
+
 ---
 ### **Lab 3: Practical Volume Examples**
 
@@ -104,6 +107,7 @@ docker run -d \
   mysql:8.0
 # Data is preserved!
 ```
+![7](img/7.png)
 
 #### **Example 2: Web App with Configuration Files**
 ```bash
@@ -129,6 +133,9 @@ docker run -d \
 # Test
 curl http://localhost:8080
 ```
+![8](img/8.png)
+
+
 ---
 ### **Lab 4: Volume Management Commands**
 ```bash
@@ -150,6 +157,7 @@ docker volume rm volume-name
 # Copy files to/from volume
 docker cp local-file.txt container-name:/path/in/volume
 ```
+![9](img/9.png)
 
 ---
 
@@ -257,6 +265,8 @@ EXPOSE 5000
 CMD ["python", "app.py"]
 ```
 
+![10](img/10.png)
+
 ### **Lab 3: Test Environment Variables**
 ```bash
 # Run with custom env vars
@@ -275,6 +285,8 @@ docker exec flask-app printenv DATABASE_HOST
 # Test the endpoint
 curl http://localhost:5000/config
 ```
+![11](img/11.png)
+
 
 ---
 ## **Part 3: Docker Monitoring**
@@ -298,6 +310,8 @@ docker stats --no-stream
 # All containers (including stopped)
 docker stats --all
 ```
+![12](img/12.png)
+
 
 #### **Useful Format Options:**
 ```bash
@@ -310,6 +324,7 @@ docker stats --format json --no-stream
 # Wide output
 docker stats --no-stream --no-trunc
 ```
+![13](img/13.png)
 
 ### **Lab 2: `docker top` - Process Monitoring**
 ```bash
@@ -322,6 +337,8 @@ docker top container-name -ef
 # Compare with host processes
 ps aux | grep docker
 ```
+
+![14](img/14.png)
 
 ### **Lab 3: `docker logs` - Application Logs**
 ```bash
@@ -343,6 +360,7 @@ docker logs --since 2024-01-15 container-name
 # Combine options
 docker logs -f --tail 50 -t container-name
 ```
+![15](img/15.png)
 
 ### **Lab 4: Container Inspection**
 ```bash
@@ -400,6 +418,7 @@ echo
 echo "4. System Info:"
 docker system df
 ```
+![16](img/16.png)
 
 ---
 
@@ -439,6 +458,7 @@ docker run -d --name web2 --network my-network nginx
 # Containers can communicate using container names
 docker exec web1 curl http://web2
 ```
+![17](img/17.png)
 
 #### **2. Host Network**
 ```bash
@@ -450,6 +470,7 @@ docker run -d --name host-app --network host nginx
 # Access directly on host port 80
 curl http://localhost
 ```
+![18](img/18.png)
 
 #### **3. None Network**
 ```bash
@@ -460,6 +481,7 @@ docker run -d --name isolated-app --network none alpine sleep 3600
 docker exec isolated-app ifconfig
 # Only loopback interface
 ```
+![19](img/19.png)
 
 #### **4. Overlay Network (Swarm)**
 ```bash
@@ -485,6 +507,8 @@ docker network rm network-name
 # Prune unused networks
 docker network prune
 ```
+![20](img/20.png)
+
 ---
 ### **Lab 4: Multi-Container Application Example**
 
@@ -512,6 +536,8 @@ docker run -d \
 
 # Web app can connect to database using "postgres-db" hostname
 ```
+![21](img/21.png)
+
 ---
 ### **Lab 5: Network Inspection & Debugging**
 ```bash
@@ -531,6 +557,8 @@ docker exec container-name curl -I http://another-container
 # View network ports
 docker port container-name
 ```
+
+![22](img/22.png)
 
 ### **Lab 6: Port Publishing vs Exposing**
 ```bash
@@ -552,6 +580,7 @@ docker run -d -p 127.0.0.1:8080:80 --name app4 nginx
 # Dockerfile: EXPOSE 80
 # Still need -p to publish
 ```
+![23](img/23.png)
 
 ---
 
@@ -598,6 +627,9 @@ docker run -d \
   --env-file .env.production \
   flask-app:latest
 ```
+![24.1](img/24.1.png)
+
+![24.2](img/24.2.png)
 
 ### **Monitoring Commands:**
 ```bash
@@ -617,6 +649,7 @@ docker exec flask-app ping -c 2 redis
 # View network details
 docker network inspect myapp-network
 ```
+![25](img/25.png)
 
 ---
 
