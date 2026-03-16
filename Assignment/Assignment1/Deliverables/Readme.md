@@ -154,7 +154,7 @@ Command used:
 docker network inspect mynet
 ```
 
-![net](images/net.png)
+![net](../images/net.png)
 
 Shows:
 
@@ -171,19 +171,19 @@ Command used:
 ```
 docker inspect backend_api
 ```
-![backend](images/backend.png)
+![backend](../images/backend.png)
 
 ```
 docker inspect frontend_ui
 ```
 
-![frontend](images/frontend.png)
+![frontend](../images/frontend.png)
 
 ```
 docker inspect postgres_db
 ```
 
-![database](images/database.png)
+![database](../images/database.png)
 
 Shows static IP assignment for containers.
 
@@ -193,7 +193,7 @@ Shows static IP assignment for containers.
 
 Add content to the database:
 
-![BeforeDown](images/BeforeDown.png)
+![BeforeDown](../images/BeforeDown.png)
 
 
 Commands used:
@@ -203,9 +203,9 @@ docker compose down
 docker compose up -d
 ```
 
-![down](images/down.png)
+![down](../images/down.png)
 
-![AfterDown](images/AfterDown.png)
+![AfterDown](../images/AfterDown.png)
 
 Previously inserted data remains available after container restart.
 
@@ -286,7 +286,7 @@ Create one stack with Alpine and multi-stage dockerfile named as opimizedsize_ba
 docker images
 ```
 
-![size](images/size.png)
+![size](../images/size.png)
 
 
 We can see that opimizedsize_backend has less size than normal_backend.
