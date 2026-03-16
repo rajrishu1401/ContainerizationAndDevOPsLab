@@ -16,6 +16,7 @@
       --accent: #00d4ff;
       --accent2: #7c3aed;
       --accent3: #10b981;
+      --accent4: #f59e0b;
       --text: #e2e8f0;
       --muted: #64748b;
     }
@@ -156,6 +157,7 @@
     }
     .section:nth-child(2) { animation-delay: 0.15s; }
     .section:nth-child(3) { animation-delay: 0.25s; }
+    .section:nth-child(4) { animation-delay: 0.35s; }
 
     .folder-root {
       display: flex;
@@ -178,6 +180,15 @@
       border-bottom-right-radius: 0;
       border-bottom-color: var(--border);
     }
+
+    /* Assignment section accent color - amber */
+    .folder-root.assignment-root:hover { border-color: rgba(245,158,11,0.5); }
+    .folder-root.assignment-root.open {
+      border-color: var(--accent4);
+      box-shadow: 0 0 24px rgba(245,158,11,0.08);
+    }
+    .folder-root.assignment-root.open .chevron { color: var(--accent4); }
+    .folder-root.assignment-root .folder-root-icon { }
 
     .folder-root-icon { font-size: 1.4rem; }
     .folder-root-name { font-size: 1.1rem; font-weight: 700; flex: 1; }
@@ -204,6 +215,11 @@
     }
     .root-children.visible { display: flex; }
 
+    /* Assignment children use amber border */
+    .root-children.assignment-children {
+      border-color: var(--accent4);
+    }
+
     .folder-row {
       display: flex;
       align-items: center;
@@ -225,6 +241,13 @@
       border-bottom-color: var(--border);
     }
 
+    .folder-row.assign-row:hover { border-color: rgba(245,158,11,0.4); }
+    .folder-row.assign-row.open {
+      border-color: rgba(245,158,11,0.6);
+      border-bottom-color: var(--border);
+    }
+    .folder-row.assign-row.open .chevron { color: var(--accent4); }
+
     .folder-row-icon { font-size: 1.1rem; }
     .folder-row-name { font-size: 0.92rem; font-weight: 600; flex: 1; }
     .folder-row-path { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
@@ -242,6 +265,10 @@
       margin-bottom: 2px;
     }
     .leaf-grid.visible { display: grid; }
+
+    .leaf-grid.assign-grid {
+      border-color: rgba(245,158,11,0.3);
+    }
 
     .leaf-card {
       display: flex;
@@ -261,6 +288,10 @@
       transform: translateY(-2px);
     }
 
+    .leaf-card.assign-card:hover {
+      border-color: var(--accent4);
+    }
+
     .leaf-card-icon { font-size: 1.1rem; }
     .leaf-card-name { font-size: 0.85rem; font-weight: 600; }
     .leaf-card-path { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); }
@@ -276,6 +307,7 @@
     .tag-blue   { background: rgba(0,212,255,0.1);  color: var(--accent);  border: 1px solid rgba(0,212,255,0.2); }
     .tag-purple { background: rgba(124,58,237,0.1); color: #a78bfa;        border: 1px solid rgba(124,58,237,0.2); }
     .tag-green  { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+    .tag-amber  { background: rgba(245,158,11,0.1); color: var(--accent4); border: 1px solid rgba(245,158,11,0.2); }
 
     footer {
       margin-top: 60px;
@@ -336,6 +368,55 @@
       </div>
     </div>
   </header>
+
+  <!-- ══ ASSIGNMENT ══ -->
+  <section class="section">
+    <div class="folder-root assignment-root" onclick="toggleRoot(this)">
+      <span class="folder-root-icon">📋</span>
+      <span class="folder-root-name">Assignment</span>
+      <span class="folder-root-meta">1 assignment</span>
+      <span class="chevron">▶</span>
+    </div>
+
+    <div class="root-children assignment-children">
+
+      <!-- Assignment 1 -->
+      <div class="folder-row assign-row" onclick="toggleRow(this)">
+        <span class="folder-row-icon">📂</span>
+        <span class="folder-row-name">Assignment 1</span>
+        <span class="tag tag-amber">ASSIGN</span>
+        <span class="folder-row-path">Assignment/Assignment1/</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="leaf-grid assign-grid">
+        <a class="leaf-card assign-card" href="Assignment/Assignment1/Normal/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">Normal</span>
+          <span class="tag tag-amber">DIR</span>
+          <span class="leaf-card-path">Assignment/Assignment1/Normal/</span>
+        </a>
+        <a class="leaf-card assign-card" href="Assignment/Assignment1/OptimizedSize/">
+          <span class="leaf-card-icon">📁</span>
+          <span class="leaf-card-name">OptimizedSize</span>
+          <span class="tag tag-amber">DIR</span>
+          <span class="leaf-card-path">Assignment/Assignment1/OptimizedSize/</span>
+        </a>
+        <a class="leaf-card assign-card" href="Assignment/Assignment1/Deliverables.md">
+          <span class="leaf-card-icon">📄</span>
+          <span class="leaf-card-name">Deliverables.md</span>
+          <span class="tag tag-purple">DOC</span>
+          <span class="leaf-card-path">Assignment/Assignment1/Deliverables.md</span>
+        </a>
+        <a class="leaf-card assign-card" href="Assignment/Assignment1/Readme.md">
+          <span class="leaf-card-icon">📝</span>
+          <span class="leaf-card-name">Readme.md</span>
+          <span class="tag tag-purple">DOC</span>
+          <span class="leaf-card-path">Assignment/Assignment1/Readme.md</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
 
   <!-- ══ CLASS LAB ══ -->
   <section class="section">
@@ -434,7 +515,7 @@
         </a>
       </div>
 
-      <!-- Class 11 + Work (JavaProgram, JavaProgramMulti) -->
+      <!-- Class 11 + Work -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Class 11</span>
@@ -462,7 +543,7 @@
         </a>
       </div>
 
-      <!-- Class 12 + Work (Part1, Part2) -->
+      <!-- Class 12 + Work -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Class 12</span>
@@ -544,7 +625,7 @@
         </a>
       </div>
 
-      <!-- Class 18 (Part1, Part2) -->
+      <!-- Class 18 -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Class 18</span>
@@ -668,6 +749,8 @@
           <span class="leaf-card-path">Lab/Exp4/Part2/</span>
         </a>
       </div>
+
+      <!-- Exp5 -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Experiment 5</span>
@@ -682,6 +765,8 @@
           <span class="leaf-card-path">Lab/Exp5/</span>
         </a>
       </div>
+
+      <!-- Exp6 -->
       <div class="folder-row" onclick="toggleRow(this)">
         <span class="folder-row-icon">📂</span>
         <span class="folder-row-name">Experiment 6</span>
