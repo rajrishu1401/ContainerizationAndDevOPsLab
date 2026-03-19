@@ -388,3 +388,141 @@ k3d-mycluster  Ready    control-plane
 ![getNodes](img/getNodes.png)
 
 ---
+
+# Task 2: View Running Pods
+
+```
+kubectl get pods
+```
+
+Pods are the smallest deployable units in Kubernetes.
+
+A pod usually contains one container.
+
+
+![list](img/list.png)
+
+![getNodes](img/getNodes.png)
+
+---
+
+# Task 3: Run a Container
+
+```
+kubectl run nginx --image=nginx
+```
+
+What it does:
+
+Creates a pod running the nginx container.
+
+![run](img/run.png)
+
+---
+
+# Task 4: View Pod Details
+
+```
+kubectl describe pod nginx
+```
+
+Shows:
+
+* Events
+* container information
+* networking
+* resource usage
+
+Useful for debugging.
+
+![describe](img/describe.png)
+
+---
+
+# Task 5: View Logs
+
+```
+kubectl logs nginx
+```
+
+Displays container logs.
+
+---
+
+# Task 6: Create Deployment
+
+```
+kubectl create deployment web --image=nginx
+```
+
+Deployment manages pods.
+
+Benefits:
+
+* automatic restart
+* rolling updates
+* scaling
+
+![deployment](img/deployment.png)
+
+---
+
+# Task 7: Scale Application
+
+```
+kubectl scale deployment web --replicas=3
+```
+
+Creates multiple pods.
+
+Purpose:
+
+Handle increased traffic.
+
+![scale](img/scale.png)
+
+---
+
+# Task 8: Expose Application
+
+```
+kubectl expose deployment web --port=80 --type=NodePort
+```
+
+Creates a service so the application becomes accessible.
+
+![port](img/port.png)
+
+---
+
+# Task 9: List Services
+
+```
+kubectl get services
+```
+
+Shows how applications are exposed.
+
+### To access using kubectl port-forwarding
+```
+kubectl port-forward service/web 8080:80
+```
+![mapping](img/mapping.png)
+
+![web](img/web.png)
+
+---
+
+# Task 10: Delete Resources
+
+```
+kubectl delete pod nginx
+```
+
+or
+
+```
+kubectl delete deployment web
+```
+
+![del](img/del.png)
