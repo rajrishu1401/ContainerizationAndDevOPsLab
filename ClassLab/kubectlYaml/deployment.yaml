@@ -1,24 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
+  labels:
+    app: web
   name: web
-
 spec:
-  replicas: 3
-
+  replicas: 1
   selector:
     matchLabels:
       app: web
-
+  strategy: {}
   template:
     metadata:
       labels:
         app: web
-
     spec:
       containers:
-      - name: nginx
-        image: nginx
-        ports:
-        - containerPort: 80
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
